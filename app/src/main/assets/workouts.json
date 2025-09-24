@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Cardio Workout",
+	"id": "589de45cc3299e1600b2f57d",
+	"equipment": "Treadmill",
+    "duration": 30,
+    "difficulty": "Intermediate"
+  },
+  {
+    "name": "Cardio Burn",
+	"id": "5f720bbea9914f000fd6f9da",
+	"equipment": "Bike",
+    "duration": 20,
+    "difficulty": "Beginner"
+  },
+  {
+    "name": "Strength Builder",
+	"id": "5f720bbea9914f000fd6f9d9",
+	"equipment": "Chest Press",
+    "duration": 45,
+    "difficulty": "Advanced"
+  },
+  {
+    "name": "Yoga Flow",
+	"id": "5f720bbea9914f000fd6f9dc",
+    "duration": 25
+  },
+    {
+    "name": "Push Ups",
+	"id": "5f720bbea9914f000fd6f9db",
+    "duration": 12
+  },
+    {
+    "name": "Endurance strength - workout",
+	"id": "5f720bbea9914f000fd6f9d8",
+	"equipment": "Biceps Curl",
+    "duration": 27,
+    "difficulty": "Advanced"
+  }
+]
