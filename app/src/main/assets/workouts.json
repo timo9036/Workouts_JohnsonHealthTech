@@ -23,12 +23,12 @@
   {
     "name": "Yoga Flow",
 	"id": "5f720bbea9914f000fd6f9dc",
-    "duration": 25
+    "duration": 25,
   },
     {
     "name": "Push Ups",
 	"id": "5f720bbea9914f000fd6f9db",
-    "duration": 12
+    "duration": 12,
   },
     {
     "name": "Endurance strength - workout",
@@ -36,5 +36,5 @@
 	"equipment": "Biceps Curl",
     "duration": 27,
     "difficulty": "Advanced"
-  }
+  },
 ]
