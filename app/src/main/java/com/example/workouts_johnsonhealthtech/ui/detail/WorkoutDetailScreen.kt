@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
+import com.example.workouts_johnsonhealthtech.ui.components.DifficultySelector
+import com.example.workouts_johnsonhealthtech.ui.components.SectionHeader
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,43 +137,3 @@ fun WorkoutDetailScreen(
     }
 }
 
-@Composable
-fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DifficultySelector(
-    selectedDifficulty: Difficulty?,
-    onDifficultySelected: (Difficulty?) -> Unit
-) {
-    val difficulties = Difficulty.values().toList()
-
-    Text("Difficulty", style = MaterialTheme.typography.bodyLarge)
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        difficulties.forEach { difficulty ->
-            FilterChip(
-                selected = selectedDifficulty == difficulty,
-                onClick = {
-                    val newSelection = if (selectedDifficulty == difficulty) null else difficulty
-                    onDifficultySelected(newSelection)
-                },
-                label = { Text(difficulty.displayName) },
-                leadingIcon = if (selectedDifficulty == difficulty) {
-                    { Icon(Icons.Filled.Done, contentDescription = "Selected") }
-                } else {
-                    null
-                }
-            )
-        }
-    }
-}
