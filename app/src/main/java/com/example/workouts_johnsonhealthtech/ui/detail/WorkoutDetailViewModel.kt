@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.repository.WorkoutRepository
+import com.example.workouts_johnsonhealthtech.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,17 +22,17 @@ class WorkoutDetailViewModel @Inject constructor(
 
     private val workoutId: String = savedStateHandle.get<String>("workoutId")!!
 
-    private val _workoutState = MutableStateFlow<WorkoutDetailUiState>(WorkoutDetailUiState.Loading)
-    val workoutState: StateFlow<WorkoutDetailUiState> = _workoutState.asStateFlow()
+    private val _workoutState = MutableStateFlow<UiState<Workout>>(UiState.Loading)
+    val workoutState: StateFlow<UiState<Workout>> = _workoutState.asStateFlow()
 
     init {
         viewModelScope.launch {
             repository.getWorkoutById(workoutId)
                 .catch { exception ->
-                    _workoutState.value = WorkoutDetailUiState.Error(exception.message ?: "An error occurred")
+                    _workoutState.value = UiState.Error(exception.message ?: "An error occurred")
                 }
                 .collect { workout ->
-                    _workoutState.value = WorkoutDetailUiState.Success(workout)
+                    _workoutState.value = UiState.Success(workout)
                 }
         }
     }

@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
+import com.example.workouts_johnsonhealthtech.ui.UiState
 import com.example.workouts_johnsonhealthtech.ui.components.DifficultySelector
 import com.example.workouts_johnsonhealthtech.ui.components.SectionHeader
+import kotlin.toString
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,45 +28,56 @@ fun WorkoutDetailScreen(
 ) {
     val uiState by viewModel.workoutState.collectAsState()
 
-    var editableWorkout by remember { mutableStateOf<Workout?>(null) }
-
-    LaunchedEffect(uiState) {
-        if (uiState is WorkoutDetailUiState.Success) {
-            editableWorkout = (uiState as WorkoutDetailUiState.Success).workout
-        }
-    }
-
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Edit Workout") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    editableWorkout?.let {
-                        viewModel.updateWorkout(it)
-                        onBack()
-                    }
-                }
+    when (val state = uiState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.Save, contentDescription = "Save Workout")
+                CircularProgressIndicator()
             }
         }
-    ) { padding ->
-        when (uiState) {
-            is WorkoutDetailUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+
+        is UiState.Success -> {
+            val workout = state.data
+            var name by remember(workout) { mutableStateOf(workout.name) }
+            var duration by remember(workout) { mutableStateOf(workout.duration.toString()) }
+            var equipment by remember(workout) { mutableStateOf(workout.equipment ?: "") }
+            var difficulty by remember(workout) { mutableStateOf(workout.difficulty) }
+
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = { Text("Edit Workout") },
+                        navigationIcon = {
+                            IconButton(onClick = onBack) {
+                                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    )
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = {
+                            val updatedWorkout = workout.copy(
+                                name = name,
+                                duration = duration.toIntOrNull() ?: 0,
+                                equipment = equipment.takeIf { it.isNotBlank() },
+                                difficulty = difficulty
+                            )
+                            viewModel.updateWorkout(updatedWorkout)
+                            onBack()
+                        }
+                    ) {
+                        Icon(Icons.Filled.Save, contentDescription = "Save Workout")
+                    }
                 }
-            }
-            is WorkoutDetailUiState.Success -> {
+            ) { padding ->
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -76,24 +89,22 @@ fun WorkoutDetailScreen(
                     item {
                         SectionHeader("Details")
                     }
-
                     item {
                         OutlinedTextField(
-                            value = editableWorkout?.name ?: "",
-                            onValueChange = { editableWorkout = editableWorkout?.copy(name = it) },
+                            value = name,
+                            onValueChange = { name = it },
                             label = { Text("Name") },
                             modifier = Modifier.fillMaxWidth(),
                             leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
                             singleLine = true
                         )
                     }
-
                     item {
                         OutlinedTextField(
-                            value = editableWorkout?.duration?.toString() ?: "",
+                            value = duration,
                             onValueChange = { newValue ->
                                 if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
-                                    editableWorkout = editableWorkout?.copy(duration = newValue.toIntOrNull() ?: 0)
+                                    duration = newValue
                                 }
                             },
                             label = { Text("Duration (mins)") },
@@ -102,36 +113,43 @@ fun WorkoutDetailScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
-
                     item {
                         OutlinedTextField(
-                            value = editableWorkout?.equipment ?: "",
-                            onValueChange = { editableWorkout = editableWorkout?.copy(equipment = it) },
+                            value = equipment,
+                            onValueChange = { equipment = it },
                             label = { Text("Equipment (e.g., Dumbbells)") },
                             modifier = Modifier.fillMaxWidth(),
-                            leadingIcon = { Icon(Icons.Filled.FitnessCenter, contentDescription = null) },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.FitnessCenter,
+                                    contentDescription = null
+                                )
+                            },
                             singleLine = true
                         )
                     }
-
                     item {
                         DifficultySelector(
-                            selectedDifficulty = editableWorkout?.difficulty,
-                            onDifficultySelected = {
-                                editableWorkout = editableWorkout?.copy(difficulty = it)
+                            selectedDifficulty = difficulty,
+                            onDifficultySelected = { newDifficulty ->
+                                difficulty = newDifficulty
                             }
                         )
                     }
                 }
             }
-            is WorkoutDetailUiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = (uiState as WorkoutDetailUiState.Error).message,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+        }
+
+        is UiState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.message,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
