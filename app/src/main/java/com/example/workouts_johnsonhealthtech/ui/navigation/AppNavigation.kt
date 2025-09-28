@@ -12,14 +12,14 @@ import com.example.workouts_johnsonhealthtech.ui.workouts.WorkoutListScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "workoutList") {
-        composable("workoutList") {
+    NavHost(navController = navController, startDestination = Screen.WorkoutList.route) {
+        composable(Screen.WorkoutList.route) {
             WorkoutListScreen(onWorkoutClick = { workoutId ->
-                navController.navigate("workoutDetail/$workoutId")
+                navController.navigate(Screen.WorkoutDetail.createRoute(workoutId))
             })
         }
         composable(
-            route = "workoutDetail/{workoutId}",
+            route = Screen.WorkoutDetail.route,
             arguments = listOf(navArgument("workoutId") { type = NavType.StringType })
         ) {
             WorkoutDetailScreen(onBack = { navController.popBackStack() })
