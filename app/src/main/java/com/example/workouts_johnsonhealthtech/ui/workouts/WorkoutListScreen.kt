@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
+import com.example.workouts_johnsonhealthtech.ui.UiState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +34,7 @@ fun WorkoutListScreen(
     viewModel: WorkoutListViewModel = hiltViewModel(),
     onWorkoutClick: (String) -> Unit
 ) {
-    val workouts by viewModel.workouts.collectAsState()
+    val uiState by viewModel.workoutsState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -42,18 +43,37 @@ fun WorkoutListScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(workouts, key = { it.id }) { workout ->
-                WorkoutItem(
-                    workout = workout,
-                    onClick = { onWorkoutClick(workout.id) }
-                )
+        when (uiState) {
+            is UiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is UiState.Success -> {
+                val workouts = (uiState as UiState.Success<List<Workout>>).data
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(workouts, key = { it.id }) { workout ->
+                        WorkoutItem(
+                            workout = workout,
+                            onClick = { onWorkoutClick(workout.id) },
+                        )
+                    }
+                }
+            }
+            is UiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = (uiState as UiState.Error).message,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
