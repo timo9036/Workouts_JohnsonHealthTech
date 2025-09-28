@@ -17,10 +17,8 @@ class DatabaseCallback(
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
         CoroutineScope(Dispatchers.IO).launch {
-            Log.d("DatabaseCallback", "Database created, populating with initial data.")
             val workouts = InitialData.getWorkouts(context)
             workoutDao.get().insertAll(workouts)
-            Log.d("DatabaseCallback", "Initial workouts inserted into database.")
         }
     }
 }

@@ -9,5 +9,5 @@ class Workout(
     val name: String,
     val equipment: String? = null,
     val duration: Int,
-    val difficulty: String? = null
+    val difficulty: Difficulty? = null
 )
