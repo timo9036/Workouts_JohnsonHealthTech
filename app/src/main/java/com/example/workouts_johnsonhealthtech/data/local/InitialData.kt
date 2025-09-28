@@ -1,7 +1,6 @@
 package com.example.workouts_johnsonhealthtech.data.local
 
 import android.content.Context
-import android.util.Log
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.google.gson.GsonBuilder

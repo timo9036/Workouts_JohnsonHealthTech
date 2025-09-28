@@ -3,7 +3,6 @@ package com.example.workouts_johnsonhealthtech.data.local
 import android.content.Context
 import android.util.Log
 import androidx.room.RoomDatabase
-import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
