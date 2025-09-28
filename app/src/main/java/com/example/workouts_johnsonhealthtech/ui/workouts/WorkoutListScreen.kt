@@ -96,7 +96,6 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    // This Row now only contains the duration and equipment.
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -115,9 +114,7 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
                         }
                     }
 
-                    // The difficulty is now on its own line within the new Column.
                     if (workout.difficulty != null) {
-                        // The 'when' statement now checks against the enum
                         val difficultyColor = when (workout.difficulty) {
                             Difficulty.BEGINNER -> Color(0xFF4CAF50)
                             Difficulty.INTERMEDIATE -> Color(0xFFFFC107)
@@ -126,7 +123,6 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
 
                         WorkoutDetail(
                             icon = Icons.Default.SignalCellularAlt,
-                            // The text now uses the displayName from the enum
                             text = workout.difficulty.displayName,
                             color = difficultyColor
                         )
