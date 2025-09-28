@@ -11,12 +11,13 @@ import javax.inject.Provider
 
 class DatabaseCallback(
     private val context: Context,
-    private val workoutDao: Provider<WorkoutDao>
+    private val workoutDao: Provider<WorkoutDao>,
+    private val applicationScope: CoroutineScope
 ) : RoomDatabase.Callback() {
 
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-        CoroutineScope(Dispatchers.IO).launch {
+        applicationScope.launch {
             val workouts = InitialData.getWorkouts(context)
             workoutDao.get().insertAll(workouts)
         }

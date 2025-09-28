@@ -11,6 +11,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Provider
 import javax.inject.Singleton
 
@@ -20,14 +23,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(app: Application, workoutDao: Provider<WorkoutDao>): AppDatabase {
+    fun provideApplicationScope(): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase(app: Application, workoutDao: Provider<WorkoutDao>, applicationScope: CoroutineScope): AppDatabase {
         return Room.databaseBuilder(
             app,
             AppDatabase::class.java,
             "workout_db"
         )
             .fallbackToDestructiveMigration()
-            .addCallback(DatabaseCallback(app, workoutDao))
+            .addCallback(DatabaseCallback(app, workoutDao, applicationScope))
             .build()
     }
 
