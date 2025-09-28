@@ -63,7 +63,9 @@ fun WorkoutListScreen(
 fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
     ElevatedCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().animateContentSize()
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -85,8 +87,12 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
                 )
             }
 
-            Column(modifier = Modifier.weight(1f).fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = workout.name,
                     style = MaterialTheme.typography.titleLarge,
@@ -134,7 +140,11 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
 }
 
 @Composable
-fun WorkoutDetail(icon: ImageVector, text: String, color: Color = MaterialTheme.colorScheme.onSurfaceVariant) {
+fun WorkoutDetail(
+    icon: ImageVector,
+    text: String,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
