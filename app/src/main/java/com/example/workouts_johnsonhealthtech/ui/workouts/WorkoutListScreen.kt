@@ -1,6 +1,7 @@
 package com.example.workouts_johnsonhealthtech.ui.workouts
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -28,18 +30,26 @@ import com.example.workouts_johnsonhealthtech.data.model.Difficulty
 import com.example.workouts_johnsonhealthtech.ui.UiState
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun WorkoutListScreen(
     viewModel: WorkoutListViewModel = hiltViewModel(),
     onWorkoutClick: (String) -> Unit
 ) {
     val uiState by viewModel.workoutsState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Workouts", fontWeight = FontWeight.Bold) },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                )
             )
         }
     ) { padding ->
@@ -62,6 +72,7 @@ fun WorkoutListScreen(
                         WorkoutItem(
                             workout = workout,
                             onClick = { onWorkoutClick(workout.id) },
+                            modifier = Modifier.animateItem()
                         )
                     }
                 }
@@ -80,7 +91,7 @@ fun WorkoutListScreen(
 }
 
 @Composable
-fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
+fun WorkoutItem(workout: Workout, onClick: () -> Unit, modifier: Modifier = Modifier) {
     ElevatedCard(
         onClick = onClick,
         modifier = Modifier
