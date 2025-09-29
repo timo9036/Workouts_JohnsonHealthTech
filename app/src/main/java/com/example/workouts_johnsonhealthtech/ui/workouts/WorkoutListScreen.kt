@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
 import com.example.workouts_johnsonhealthtech.ui.UiState
+import com.example.workouts_johnsonhealthtech.ui.theme.AppTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -94,9 +95,7 @@ fun WorkoutListScreen(
 fun WorkoutItem(workout: Workout, onClick: () -> Unit, modifier: Modifier = Modifier) {
     ElevatedCard(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize()
+        modifier = modifier.fillMaxWidth().animateContentSize()
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -118,12 +117,8 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit, modifier: Modifier = Modi
                 )
             }
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
+            Column(modifier = Modifier.weight(1f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     text = workout.name,
                     style = MaterialTheme.typography.titleLarge,
@@ -153,9 +148,9 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit, modifier: Modifier = Modi
 
                     if (workout.difficulty != null) {
                         val difficultyColor = when (workout.difficulty) {
-                            Difficulty.BEGINNER -> Color(0xFF4CAF50)
-                            Difficulty.INTERMEDIATE -> Color(0xFFFFC107)
-                            Difficulty.ADVANCED -> Color(0xFFF44336)
+                            Difficulty.BEGINNER -> AppTheme.extendedColors.beginner
+                            Difficulty.INTERMEDIATE -> AppTheme.extendedColors.intermediate
+                            Difficulty.ADVANCED -> AppTheme.extendedColors.advanced
                         }
 
                         WorkoutDetail(
