@@ -43,13 +43,10 @@ class WorkoutDetailViewModelTest {
 
     @Test
     fun `init - when repository returns a workout - state is Success`() = runTest {
-        // Given
         coEvery { mockRepository.getWorkoutById(testWorkoutId) } returns flowOf(mockWorkout)
 
-        // When
         viewModel = WorkoutDetailViewModel(mockRepository, savedStateHandle)
 
-        // Then
         val uiState = viewModel.workoutState.value
         assertTrue(uiState is UiState.Success)
         assertEquals(mockWorkout, (uiState as UiState.Success).data)
@@ -57,14 +54,11 @@ class WorkoutDetailViewModelTest {
 
     @Test
     fun `init - when repository throws an exception - state is Error`() = runTest {
-        // Given
         val errorMessage = "Workout not found"
         coEvery { mockRepository.getWorkoutById(testWorkoutId) } returns flow { throw RuntimeException(errorMessage) }
 
-        // When
         viewModel = WorkoutDetailViewModel(mockRepository, savedStateHandle)
 
-        // Then
         val uiState = viewModel.workoutState.value
         assertTrue(uiState is UiState.Error)
         assertEquals(errorMessage, (uiState as UiState.Error).message)
@@ -72,15 +66,12 @@ class WorkoutDetailViewModelTest {
 
     @Test
     fun `updateWorkout - calls repository to update the workout`() = runTest {
-        // Given
         coEvery { mockRepository.getWorkoutById(testWorkoutId) } returns flowOf(mockWorkout)
         viewModel = WorkoutDetailViewModel(mockRepository, savedStateHandle)
         val updatedWorkout = mockWorkout.copy(name = "Updated Workout Name")
 
-        // When
         viewModel.updateWorkout(updatedWorkout)
 
-        // Then
         coVerify { mockRepository.updateWorkout(updatedWorkout) }
     }
 }

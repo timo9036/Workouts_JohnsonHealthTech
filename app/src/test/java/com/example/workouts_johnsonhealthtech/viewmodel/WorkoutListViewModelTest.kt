@@ -31,17 +31,14 @@ class WorkoutListViewModelTest {
 
     @Test
     fun `init - when repository returns workouts - state is Success`() = runTest {
-        // Given
         val mockWorkouts = listOf(
             Workout("1", "Morning Stretch", "None", 15, Difficulty.BEGINNER),
             Workout("2", "HIIT Cardio", "None", 30, Difficulty.INTERMEDIATE)
         )
         coEvery { mockRepository.getWorkouts() } returns flowOf(mockWorkouts)
 
-        // When
         viewModel = WorkoutListViewModel(mockRepository)
 
-        // Then
         val uiState = viewModel.workoutsState.value
         assertTrue(uiState is UiState.Success)
         assertEquals(mockWorkouts, (uiState as UiState.Success).data)
@@ -49,14 +46,11 @@ class WorkoutListViewModelTest {
 
     @Test
     fun `init - when repository throws exception - state is Error`() = runTest {
-        // Given
         val errorMessage = "Database error"
         coEvery { mockRepository.getWorkouts() } returns flow { throw RuntimeException(errorMessage) }
 
-        // When
         viewModel = WorkoutListViewModel(mockRepository)
 
-        // Then
         val uiState = viewModel.workoutsState.value
         assertTrue(uiState is UiState.Error)
         assertEquals(errorMessage, (uiState as UiState.Error).message)
