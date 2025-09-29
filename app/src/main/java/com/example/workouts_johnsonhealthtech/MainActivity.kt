@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.example.workouts_johnsonhealthtech.ui.navigation.AppNavigation
+import com.example.workouts_johnsonhealthtech.ui.theme.Workouts_JohnsonHealthTechTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,8 +16,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                AppNavigation()
+            Workouts_JohnsonHealthTechTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    AppNavigation()
+                }
             }
         }
     }

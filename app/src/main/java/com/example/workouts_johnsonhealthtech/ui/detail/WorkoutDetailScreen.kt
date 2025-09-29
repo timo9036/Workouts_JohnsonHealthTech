@@ -62,7 +62,7 @@ fun WorkoutDetailScreen(
                     )
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
+                    ExtendedFloatingActionButton(
                         onClick = {
                             val updatedWorkout = workout.copy(
                                 name = name,
@@ -72,10 +72,10 @@ fun WorkoutDetailScreen(
                             )
                             viewModel.updateWorkout(updatedWorkout)
                             onBack()
-                        }
-                    ) {
-                        Icon(Icons.Filled.Save, contentDescription = "Save Workout")
-                    }
+                        },
+                        icon = { Icon(Icons.Filled.Save, "Save Workout") },
+                        text = { Text(text = "Save") }
+                    )
                 }
             ) { padding ->
                 LazyColumn(

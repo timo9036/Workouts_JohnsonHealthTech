@@ -1,6 +1,7 @@
 package com.example.workouts_johnsonhealthtech.ui.workouts
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -26,20 +28,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workouts_johnsonhealthtech.data.model.Workout
 import com.example.workouts_johnsonhealthtech.data.model.Difficulty
 import com.example.workouts_johnsonhealthtech.ui.UiState
+import com.example.workouts_johnsonhealthtech.ui.theme.AppTheme
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun WorkoutListScreen(
     viewModel: WorkoutListViewModel = hiltViewModel(),
     onWorkoutClick: (String) -> Unit
 ) {
     val uiState by viewModel.workoutsState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Workouts", fontWeight = FontWeight.Bold) },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                )
             )
         }
     ) { padding ->
@@ -62,6 +73,7 @@ fun WorkoutListScreen(
                         WorkoutItem(
                             workout = workout,
                             onClick = { onWorkoutClick(workout.id) },
+                            modifier = Modifier.animateItem()
                         )
                     }
                 }
@@ -80,12 +92,10 @@ fun WorkoutListScreen(
 }
 
 @Composable
-fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
+fun WorkoutItem(workout: Workout, onClick: () -> Unit, modifier: Modifier = Modifier) {
     ElevatedCard(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize()
+        modifier = modifier.fillMaxWidth().animateContentSize()
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -107,12 +117,8 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
                 )
             }
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
+            Column(modifier = Modifier.weight(1f).fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween) {
                 Text(
                     text = workout.name,
                     style = MaterialTheme.typography.titleLarge,
@@ -142,9 +148,9 @@ fun WorkoutItem(workout: Workout, onClick: () -> Unit) {
 
                     if (workout.difficulty != null) {
                         val difficultyColor = when (workout.difficulty) {
-                            Difficulty.BEGINNER -> Color(0xFF4CAF50)
-                            Difficulty.INTERMEDIATE -> Color(0xFFFFC107)
-                            Difficulty.ADVANCED -> Color(0xFFF44336)
+                            Difficulty.BEGINNER -> AppTheme.extendedColors.beginner
+                            Difficulty.INTERMEDIATE -> AppTheme.extendedColors.intermediate
+                            Difficulty.ADVANCED -> AppTheme.extendedColors.advanced
                         }
 
                         WorkoutDetail(
