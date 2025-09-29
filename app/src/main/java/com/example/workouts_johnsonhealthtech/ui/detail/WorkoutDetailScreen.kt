@@ -7,17 +7,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workouts_johnsonhealthtech.data.model.Workout
-import com.example.workouts_johnsonhealthtech.data.model.Difficulty
 import com.example.workouts_johnsonhealthtech.ui.UiState
 import com.example.workouts_johnsonhealthtech.ui.components.DifficultySelector
 import com.example.workouts_johnsonhealthtech.ui.components.SectionHeader
-import kotlin.toString
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,10 +40,10 @@ fun WorkoutDetailScreen(
 
         is UiState.Success -> {
             val workout = state.data
-            var name by remember(workout) { mutableStateOf(workout.name) }
-            var duration by remember(workout) { mutableStateOf(workout.duration.toString()) }
-            var equipment by remember(workout) { mutableStateOf(workout.equipment ?: "") }
-            var difficulty by remember(workout) { mutableStateOf(workout.difficulty) }
+            var name by rememberSaveable(workout) { mutableStateOf(workout.name) }
+            var duration by rememberSaveable(workout) { mutableStateOf(workout.duration.toString()) }
+            var equipment by rememberSaveable(workout) { mutableStateOf(workout.equipment ?: "") }
+            var difficulty by rememberSaveable(workout) { mutableStateOf(workout.difficulty) }
 
             Scaffold(
                 topBar = {
