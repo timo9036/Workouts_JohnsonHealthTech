@@ -60,7 +60,6 @@ class WorkoutDetailScreenTest {
 
     @Test
     fun enterInvalidDuration_isHandledGracefully() {
-        // Find the duration text field by its label
         val durationTextField = composeTestRule.onNode(
             hasText("Duration (mins)"),
             useUnmergedTree = true
